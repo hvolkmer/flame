@@ -179,3 +179,40 @@ describe Scorer do
       end
     end
   end
+
+
+  describe 'when recursively analyzing the complexity of code' do
+    before :each do
+      @scorer = Scorer.new
+    end
+    
+     it 'should require a complexity modifier value' do
+       lambda { @scorer.penalize_by }.should raise_error(ArgumentError)
+     end
+
+     it 'should require a block, for code to recursively analyze' do
+       lambda { @scorer.penalize_by(42) }.should raise_error(LocalJumpError)
+     end
+
+     it 'should recursively analyze the provided code block' do
+       @scorer.penalize_by(42) do
+         @foo = true
+       end
+
+       @foo.should be_true
+     end
+
+     it 'should update the complexity multiplier when recursing' do
+       @scorer.multiplier = 1
+       @scorer.penalize_by(42) do
+         @scorer.multiplier.should == 43
+       end
+     end
+
+     it 'when it is done it should restore the complexity multiplier to its original value' do
+       @scorer.multiplier = 1
+       @scorer.penalize_by(42) do
+       end
+       @scorer.multiplier.should == 1
+     end
+   end

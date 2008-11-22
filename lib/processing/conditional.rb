@@ -4,7 +4,7 @@ module Flame
     def process_if(exp)
       add_to_score :branch
       process exp.shift # cond
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         process exp.shift # true
         process exp.shift # false
       end
@@ -14,7 +14,7 @@ module Flame
     # TODO:  it's not clear to me whether this can be generated at all.
     def process_else(exp)
       add_to_score :branch
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         analyze_list exp
       end
       s()
@@ -22,7 +22,7 @@ module Flame
   
     def process_when(exp)
       add_to_score :branch
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         analyze_list exp
       end
       s()
@@ -31,7 +31,7 @@ module Flame
     def process_case(exp)
       add_to_score :branch
       process exp.shift # recv
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         analyze_list exp
       end
       s()
@@ -39,7 +39,7 @@ module Flame
   
     def process_or(exp)
       add_to_score :branch
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         process exp.shift # lhs
         process exp.shift # rhs
       end
@@ -48,7 +48,7 @@ module Flame
   
     def process_and(exp)
       add_to_score :branch
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         process exp.shift # lhs
         process exp.shift # rhs
       end
@@ -57,7 +57,7 @@ module Flame
   
     def process_rescue(exp)
       add_to_score :branch
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         analyze_list exp
       end
       s()

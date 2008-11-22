@@ -3,7 +3,7 @@ module Flame
   
     def process_until(exp)
       add_to_score :branch
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         process exp.shift # cond
         process exp.shift # body
       end
@@ -13,7 +13,7 @@ module Flame
 
     def process_while(exp)
       add_to_score :branch
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         process exp.shift # cond
         process exp.shift # body
       end

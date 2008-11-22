@@ -10,7 +10,7 @@ module Flame
 
     def process_class(exp)
       set_class exp.shift do
-        penalize_by 1.0 do
+        @scorer.penalize_by 1.0 do
           supr = process exp.shift
         end
         analyze_list exp
@@ -41,7 +41,7 @@ module Flame
     end
   
     def process_sclass(exp)
-      penalize_by 0.5 do
+      @scorer.penalize_by 0.5 do
         recv = process exp.shift
         analyze_list exp
       end

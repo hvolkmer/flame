@@ -2,11 +2,11 @@ module Flame
   module CallProcessing
 
     def process_call(exp)
-      penalize_by 0.2 do
+      @scorer.penalize_by 0.2 do
         recv = process exp.shift
       end
       name = exp.shift
-      penalize_by 0.2 do
+      @scorer.penalize_by 0.2 do
         args = process exp.shift
       end
 
@@ -47,7 +47,7 @@ module Flame
 
       process exp.shift # no penalty for LHS
 
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         analyze_list exp
       end
 
@@ -55,7 +55,7 @@ module Flame
     end
   
     def process_block(exp)
-      penalize_by 0.1 do
+      @scorer.penalize_by 0.1 do
         analyze_list exp
       end
       s()

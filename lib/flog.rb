@@ -19,7 +19,6 @@ class Flog < SexpProcessor
 
   THRESHOLD = 0.60
 
-
   @@no_class = :main
   @@no_method = :none
 
@@ -81,14 +80,6 @@ class Flog < SexpProcessor
   
   def add_to_score(name)
     @scorer.add_to_score(name, class_name, method_name)
-  end
-    
-  def penalize_by(bonus, &block)
-    if block_given?
-      @scorer.penalize_by(bonus, &block)
-    else
-      @scorer.penalize_by bonus
-    end
   end
 
   def analyze_list(exp)
