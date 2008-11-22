@@ -943,4 +943,21 @@ describe Flog do
       end
     end
   end
+  
+  describe "report" do
+    describe "when a report is requested" do
+      before :each do
+        @io = stub("IO handle", :puts => nil)
+      end
+      
+      it "should create a report" do
+        @flog.report(@io)
+      end
+      
+      it "should reset the stats" do
+        @flog.expects(:reset)
+        @flog.report(@io)
+      end
+    end
+  end
 end

@@ -83,8 +83,6 @@ describe Scorer do
       end
     end
 
-
-
     describe 'when compiling summaries for a method' do
       before :each do
         @tally = { :foo => 0.0 }

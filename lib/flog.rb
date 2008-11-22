@@ -11,13 +11,12 @@ require 'processing/conditional'
 require 'processing/loop'
 require 'processing/definition'
 require 'scorer'
+require 'report'
 
 class Flog < SexpProcessor
   VERSION = '1.2.0'
 
   include UnifiedRuby
-
-  THRESHOLD = 0.60
 
   @@no_class = :main
   @@no_method = :none
@@ -105,12 +104,15 @@ class Flog < SexpProcessor
   def method_name
     @method_stack.first || @@no_method
   end
-
+  
+  ####### remove later (should be in scorer)
+  # These methods delegate to scorer - mostly because of the specs
+  # We need to refactor the specs so that they spec the scorer or
+  # just test the interaction to the scorer
   def reset
     @scorer.reset
   end
   
-  ##### remove later (should be in scorer)
   def multiplier
     @scorer.multiplier
   end
@@ -134,46 +136,12 @@ class Flog < SexpProcessor
   def calls
     @scorer.calls
   end
-  
-  ##### remove later (should be in scorer)
-
-
-
-  def output_summary(io)
-    io.puts "Total Flog = %.1f (%.1f flog / method)\n" % [total, average]
-  end
-
-  def output_method_details(io, class_method, call_list)
-    return 0 if options[:methods] and class_method =~ /##{@@no_method}/
-    
-    total = totals[class_method]
-    io.puts "%s: (%.1f)" % [class_method, total]
-
-    call_list.sort_by { |k,v| -v }.each do |call, count|
-      io.puts "  %6.1f: %s" % [count, call]
-    end
-
-    total
-  end
-
-  def output_details(io, max = nil)
-    my_totals = totals
-    current = 0
-    calls.sort_by { |k,v| -my_totals[k] }.each do |class_method, call_list|
-      current += output_method_details(io, class_method, call_list)
-      break if max and current >= max
-    end
-  end
+  ##### end remove later ####
 
   def report(io = $stdout)
-    output_summary(io)
-    return if options[:score]
-    
-    if options[:all]
-      output_details(io)
-    else
-      output_details(io, total * THRESHOLD)
-    end    
+    the_report = Report.new(io, @scorer, options[:methods])
+    report_options = { :print_only_score => options[:score], :print_all => options[:all]}
+    the_report.print(report_options)
   ensure
     reset
   end
